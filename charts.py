@@ -5,17 +5,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import precision_recall_curve
 
-BG, FG = "#0b1026", "#cfe8ff"
-CYAN, PURPLE, PINK, GREEN, RED = "#00f0ff", "#a855f7", "#ff4ecd", "#2ee59d", "#ff4d6d"
+BG, FG = "#08201a", "#d6fff1"
+EMERALD, AMBER, GOLD, GREEN, RED = "#00e5a0", "#ffb703", "#ffd166", "#2ee59d", "#ff4d6d"
 
 
 def _fig(w=6.4, h=4.0):
     fig, ax = plt.subplots(figsize=(w, h))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG)
+    ax.set_axisbelow(True)
     ax.tick_params(colors=FG)
     for s in ax.spines.values():
-        s.set_color("#2a3560")
+        s.set_color("#1f4a3f")
     ax.xaxis.label.set_color(FG)
     ax.yaxis.label.set_color(FG)
     ax.title.set_color(FG)
@@ -25,10 +26,10 @@ def _fig(w=6.4, h=4.0):
 def importance_fig(importances):
     imp = importances.sort_values()
     fig, ax = _fig()
-    ax.barh(imp.index, imp.values, color=CYAN, edgecolor=PURPLE)
+    ax.barh(imp.index, imp.values, color=EMERALD, edgecolor=AMBER)
     ax.set_title("Which features detect fraud?", fontweight="bold")
     ax.set_xlabel("Importance")
-    ax.grid(axis="x", color="#1d2650")
+    ax.grid(axis="x", color="#12372e")
     fig.tight_layout()
     return fig
 
@@ -37,16 +38,16 @@ def confusion_fig(m, threshold):
     """2x2 grid; each cell has its own colour so small numbers stay readable."""
     from matplotlib.patches import FancyBboxPatch
     cells = [  # (row, col, label, value, colour)
-        (0, 0, "True OK", m["tn"], "#12665a"),
-        (0, 1, "False alarm", m["fp"], "#b8741a"),
-        (1, 0, "Missed fraud", m["fn"], "#a8324a"),
-        (1, 1, "Caught fraud", m["tp"], "#1f6fd1"),
+        (0, 0, "True OK", m["tn"], "#0f766e"),
+        (0, 1, "False alarm", m["fp"], "#b45309"),
+        (1, 0, "Missed fraud", m["fn"], "#be123c"),
+        (1, 1, "Caught fraud", m["tp"], "#059669"),
     ]
     fig, ax = _fig(5.4, 4.4)
     for r, c, label, value, color in cells:
         ax.add_patch(FancyBboxPatch((c + 0.04, 1 - r + 0.04), 0.92, 0.92,
                                     boxstyle="round,pad=0.0,rounding_size=0.06",
-                                    facecolor=color, edgecolor="#cfe8ff", linewidth=1.2))
+                                    facecolor=color, edgecolor="#d6fff1", linewidth=1.2))
         ax.text(c + 0.5, 1 - r + 0.56, f"{value:,}", ha="center", va="center",
                 color="white", fontsize=20, fontweight="bold")
         ax.text(c + 0.5, 1 - r + 0.30, label, ha="center", va="center",
@@ -67,16 +68,16 @@ def pr_fig(y_true, p, threshold):
     prec, rec, thr = precision_recall_curve(y_true, p)
     idx = int(np.argmin(np.abs(thr - threshold)))
     fig, ax = _fig()
-    ax.plot(rec, prec, color=CYAN, linewidth=2.5)
-    ax.fill_between(rec, prec, color=CYAN, alpha=0.12)
-    ax.scatter([rec[idx]], [prec[idx]], color=PINK, s=90, zorder=5,
+    ax.plot(rec, prec, color=EMERALD, linewidth=2.5)
+    ax.fill_between(rec, prec, color=EMERALD, alpha=0.12)
+    ax.scatter([rec[idx]], [prec[idx]], color=AMBER, s=90, zorder=5,
                label=f"threshold {threshold:.2f}")
     ax.set_xlabel("Recall (frauds caught)")
     ax.set_ylabel("Precision (alerts that are real)")
     ax.set_title("Precision-Recall trade-off", fontweight="bold")
     ax.set_ylim(0, 1.02)
-    ax.grid(color="#1d2650")
-    leg = ax.legend(facecolor=BG, edgecolor="#2a3560")
+    ax.grid(color="#12372e")
+    leg = ax.legend(facecolor=BG, edgecolor="#1f4a3f")
     for t in leg.get_texts():
         t.set_color(FG)
     fig.tight_layout()

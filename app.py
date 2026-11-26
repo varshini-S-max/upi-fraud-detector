@@ -18,44 +18,64 @@ st.set_page_config(page_title="UPI Fraud Detector", page_icon="🛡️")
 
 st.markdown("""
 <style>
+/* Secure-fintech theme: emerald + gold on deep green-black */
 .stApp {
     background:
-        radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.16), transparent 40%),
-        radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.20), transparent 40%),
-        linear-gradient(160deg, #050816, #0b1026 50%, #120a2e);
+        radial-gradient(circle at 12% 18%, rgba(0, 229, 160, 0.14), transparent 42%),
+        radial-gradient(circle at 88% 82%, rgba(255, 183, 3, 0.10), transparent 40%),
+        linear-gradient(165deg, #030d0a, #06201a 55%, #0a1a14);
     background-attachment: fixed;
 }
+/* dotted pattern */
 .stApp::before {
     content: ""; position: fixed; inset: 0; pointer-events: none;
-    background-image:
-        linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px);
-    background-size: 44px 44px;
-    animation: gridMove 12s linear infinite;
+    background-image: radial-gradient(rgba(0, 229, 160, 0.22) 1px, transparent 1.4px);
+    background-size: 28px 28px;
+    opacity: 0.55;
 }
-@keyframes gridMove { from { background-position: 0 0; } to { background-position: 44px 44px; } }
+/* security scan line moving down the page */
+.stApp::after {
+    content: ""; position: fixed; left: 0; right: 0; top: -6vh; height: 90px; pointer-events: none;
+    background: linear-gradient(180deg, transparent, rgba(0, 229, 160, 0.10), transparent);
+    border-bottom: 1px solid rgba(0, 229, 160, 0.30);
+    animation: scan 7s linear infinite;
+}
+@keyframes scan { from { transform: translateY(0); } to { transform: translateY(112vh); } }
 [data-testid="stHeader"] { background: transparent; }
+
 .banner-wrap { text-align: center; margin-bottom: 8px; }
 .banner-wrap img {
-    width: 100%; max-width: 420px; border-radius: 18px;
-    border: 1px solid rgba(0, 240, 255, 0.6);
+    width: 100%; max-width: 420px; border-radius: 20px;
+    border: 1px solid rgba(0, 229, 160, 0.55);
     animation: pulseGlow 3.5s ease-in-out infinite alternate;
 }
 @keyframes pulseGlow {
-    from { box-shadow: 0 0 15px rgba(0, 240, 255, 0.35), 0 0 40px rgba(168, 85, 247, 0.20); }
-    to   { box-shadow: 0 0 35px rgba(0, 240, 255, 0.70), 0 0 80px rgba(168, 85, 247, 0.45); }
+    from { box-shadow: 0 0 14px rgba(0, 229, 160, 0.30), 0 0 40px rgba(255, 183, 3, 0.10); }
+    to   { box-shadow: 0 0 34px rgba(0, 229, 160, 0.65), 0 0 70px rgba(255, 183, 3, 0.25); }
 }
 h1 {
     text-align: center;
-    background: linear-gradient(90deg, #00f0ff, #a855f7, #ff4ecd);
+    background: linear-gradient(90deg, #00e5a0, #7dffd6 45%, #ffd166);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.tagline { text-align: center; color: #9fb3d9; margin-top: -10px; margin-bottom: 18px; }
-.stButton > button {
-    background: linear-gradient(90deg, #00c6ff, #7b2ff7); color: white; border: none;
-    border-radius: 12px; padding: 10px 28px; font-weight: 700; transition: all 0.25s ease;
+.tagline { text-align: center; color: #a7c7be; margin-top: -10px; margin-bottom: 18px; }
+.status { text-align: center; margin-bottom: 14px; }
+.status span {
+    display: inline-block; padding: 3px 14px; border-radius: 999px; font-size: 0.8rem; font-weight: 700;
+    color: #00e5a0; border: 1px solid rgba(0, 229, 160, 0.5); background: rgba(0, 229, 160, 0.08);
 }
-.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 0 22px rgba(0, 198, 255, 0.8); color: white; }
+
+/* tabs: green accent */
+button[data-baseweb="tab"][aria-selected="true"] { color: #00e5a0 !important; }
+[data-baseweb="tab-highlight"] { background-color: #00e5a0 !important; }
+
+.stButton > button {
+    background: linear-gradient(90deg, #00c98a, #0aa6a0); color: #031510; border: none;
+    border-radius: 12px; padding: 10px 28px; font-weight: 800; transition: all 0.25s ease;
+}
+.stButton > button:hover {
+    transform: translateY(-2px); box-shadow: 0 0 22px rgba(0, 229, 160, 0.75); color: #031510;
+}
 .gauge-box { text-align: center; margin-top: 10px; }
 .gauge {
     width: 170px; height: 170px; border-radius: 50%;
@@ -63,19 +83,19 @@ h1 {
     display: grid; place-items: center; margin: 0 auto 8px auto; box-shadow: 0 0 30px var(--c);
 }
 .gauge-inner {
-    width: 132px; height: 132px; border-radius: 50%; background: #0b1026;
+    width: 132px; height: 132px; border-radius: 50%; background: #06201a;
     display: grid; place-items: center; font-size: 2rem; font-weight: 800; color: var(--c);
 }
 .verdict { text-align: center; font-size: 1.3rem; font-weight: 700; margin: 6px 0 10px 0; }
 .glass {
-    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 229, 160, 0.20);
     border-radius: 16px; padding: 16px 20px; backdrop-filter: blur(10px); margin-top: 14px;
 }
 .glass h4 { margin: 0 0 10px 0; }
 .chip {
     display: inline-block; padding: 4px 12px; margin: 3px 4px 3px 0; border-radius: 999px;
     font-size: 0.85rem; font-weight: 600;
-    background: rgba(255, 82, 82, 0.15); color: #ff8a8a; border: 1px solid #ff5252;
+    background: rgba(255, 183, 3, 0.12); color: #ffd166; border: 1px solid #ffb703;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -107,6 +127,9 @@ if BANNER.exists():
                 unsafe_allow_html=True)
 st.title("UPI Fraud Detector")
 st.markdown('<p class="tagline">Score UPI transactions for fraud risk, one at a time or in bulk.</p>',
+            unsafe_allow_html=True)
+
+st.markdown('<div class="status"><span>🟢 MODEL ONLINE · SYNTHETIC DATA</span></div>',
             unsafe_allow_html=True)
 
 tab_check, tab_batch, tab_insights = st.tabs(
