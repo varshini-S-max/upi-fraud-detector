@@ -1,0 +1,17 @@
+{
+  "threshold": 0.392,
+  "precision": 0.332,
+  "recall": 0.44,
+  "f1": 0.378,
+  "pr_auc": 0.262,
+  "baseline_accuracy": 0.9841,
+  "accuracy": 0.977,
+  "confusion": {
+    "tn": 9700,
+    "fp": 141,
+    "fn": 89,
+    "tp": 70
+  },
+  "fraud_rate": 0.0159,
+  "n_transactions": 50000
+}
